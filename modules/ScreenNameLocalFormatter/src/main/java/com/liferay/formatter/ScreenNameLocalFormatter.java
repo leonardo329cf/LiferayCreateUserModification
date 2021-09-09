@@ -1,5 +1,6 @@
 package com.liferay.formatter;
 
+import com.liferay.formatter.keys.NewFormatterKeys;
 import com.liferay.mail.kernel.service.MailService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -68,6 +69,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.PwdGenerator;
 import com.liferay.portal.kernel.util.ServiceProxyFactory;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -425,6 +427,8 @@ public class ScreenNameLocalFormatter extends UserLocalServiceWrapper {
 
 			emailAddress = this.emailAddressGenerator.generate(companyId, userId);
 		}
+		
+		screenName = addEmailIfIsNotEmail(screenName);
 
 		validate(companyId, userId, autoPassword, password1, password2, autoScreenName, screenName, emailAddress, null,
 				firstName, middleName, lastName, organizationIds, locale);
@@ -432,15 +436,6 @@ public class ScreenNameLocalFormatter extends UserLocalServiceWrapper {
 		if (!autoPassword && (Validator.isNull(password1) || Validator.isNull(password2))) {
 
 			throw new UserPasswordException.MustNotBeNull(userId);
-		}
-
-		if (autoScreenName) {
-			
-			try {
-				screenName = screenNameGenerator.generate(companyId, userId, emailAddress);
-			} catch (Exception exception) {
-				throw new SystemException(exception);
-			}
 		}
 
 		User defaultUser = getDefaultUser(companyId);
@@ -1309,12 +1304,18 @@ public class ScreenNameLocalFormatter extends UserLocalServiceWrapper {
 //	
 //	
 //	
-//	Useful methods:
+//	Util methods:
 //	
 //	
 //	
 //	
 //	
+	private String addEmailIfIsNotEmail(String screenName) {
+		if (screenName != null && screenName != "" && !Validator.isEmailAddress(screenName)) {
+			screenName = screenName.concat(PropsUtil.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL));
+		}
+		return screenName;
+	}
 	
 	protected String getLogin(String login) {
 		return StringUtil.lowerCase(StringUtil.trim(login));
