@@ -1315,6 +1315,7 @@ public class ScreenNameLocalFormatter extends UserLocalServiceWrapper {
 //	
 //	
 //	
+	
 	protected String getLogin(String login) {
 		return StringUtil.lowerCase(StringUtil.trim(login));
 	}

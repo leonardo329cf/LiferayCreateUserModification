@@ -45,14 +45,19 @@ public class NewScreenNameValidator implements ScreenNameValidator {
 
 	@Override
 	public boolean validate(long companyId, String screenName) {
+		
 		if (!Validator.isEmailAddress(screenName) || 
 			StringUtil.equalsIgnoreCase(screenName, POSTFIX) ||
 			hasInvalidChars(screenName) ||
-			!screenName.endsWith(PropsUtil.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL))
+			!screenName.endsWith(getCorrectEmail())
 			) {
 			return false;
 		}
 		return true;
+	}
+	
+	public String getCorrectEmail() {
+		return PropsUtil.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL);
 	}
 
 	protected String getJSEscapedSpecialChars() {
@@ -95,5 +100,4 @@ public class NewScreenNameValidator implements ScreenNameValidator {
 	private String _jsEscapedSpecialChars;
 	private String _specialChars;
 	private String _specialCharsRegex;
-
 }
