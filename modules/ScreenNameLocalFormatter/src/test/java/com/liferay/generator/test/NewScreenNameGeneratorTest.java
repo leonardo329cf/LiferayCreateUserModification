@@ -3,14 +3,13 @@ package com.liferay.generator.test;
 import com.liferay.formatter.keys.NewFormatterKeys;
 import com.liferay.generator.NewScreenNameGenerator;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.GroupWrapper;
+import com.liferay.portal.kernel.model.UserWrapper;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
-import com.liferay.portal.kernel.model.GroupWrapper;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.UserWrapper;
 
 import org.junit.After;
 import org.junit.Assert;
