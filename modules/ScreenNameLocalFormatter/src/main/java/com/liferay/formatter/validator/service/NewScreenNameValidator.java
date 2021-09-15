@@ -16,11 +16,11 @@ package com.liferay.formatter.validator.service;
 
 import com.liferay.formatter.keys.NewFormatterKeys;
 import com.liferay.petra.string.CharPool;
-import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.security.auth.ScreenNameValidator;
-import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.Html;
+import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -29,6 +29,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author leonardo.ferreira
@@ -48,17 +49,17 @@ public class NewScreenNameValidator implements ScreenNameValidator {
 				"]');if (val.match(pattern)) {return false;}return true;}";
 	}
 
-	public String getCorrectEmail() {
-		return PropsUtil.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL);
+	private String _getCorrectEmail() {
+		return _props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL);
 	}
 
 	@Override
 	public String getDescription(Locale locale) {
-		return LanguageUtil.format(
+		return _language.format(
 			locale,
 			"the-screen-name-needs-to-have-correct-email-suffix-if-is-email-" +
 				"or-cannot-contain-reserved-word",
-			new String[] {getCorrectEmail(), POSTFIX, getSpecialChars()},
+			new String[] {_getCorrectEmail(), POSTFIX, getSpecialChars()},
 			false);
 	}
 
@@ -67,7 +68,7 @@ public class NewScreenNameValidator implements ScreenNameValidator {
 		if (!Validator.isEmailAddress(screenName) ||
 			StringUtil.equalsIgnoreCase(screenName, POSTFIX) ||
 			hasInvalidChars(screenName) ||
-			!screenName.endsWith(getCorrectEmail())) {
+			!screenName.endsWith(_getCorrectEmail())) {
 
 			return false;
 		}
@@ -77,7 +78,7 @@ public class NewScreenNameValidator implements ScreenNameValidator {
 
 	protected String getJSEscapedSpecialChars() {
 		if (_jsEscapedSpecialChars == null) {
-			_jsEscapedSpecialChars = HtmlUtil.escapeJS(getSpecialCharsRegex());
+			_jsEscapedSpecialChars = _html.escapeJS(getSpecialCharsRegex());
 		}
 
 		return _jsEscapedSpecialChars;
@@ -85,7 +86,7 @@ public class NewScreenNameValidator implements ScreenNameValidator {
 
 	protected String getSpecialChars() {
 		if (_specialChars == null) {
-			String specialChars = PropsUtil.get(
+			String specialChars = _props.get(
 				PropsKeys.USERS_SCREEN_NAME_SPECIAL_CHARACTERS);
 
 			_specialChars = StringUtil.removeChar(specialChars, CharPool.SLASH);
@@ -115,5 +116,13 @@ public class NewScreenNameValidator implements ScreenNameValidator {
 	private String _jsEscapedSpecialChars;
 	private String _specialChars;
 	private String _specialCharsRegex;
-
+	
+	@Reference
+	private Props _props;
+	
+	@Reference
+	private Html _html;
+	
+	@Reference
+	private Language _language;	
 }
