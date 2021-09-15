@@ -14,12 +14,17 @@
 
 package com.liferay.formatter.validator.service.test;
 
+import com.liferay.formatter.keys.NewFormatterKeys;
 import com.liferay.formatter.validator.service.NewScreenNameValidator;
+import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.util.Html;
+import com.liferay.portal.kernel.util.Props;
+import com.liferay.portal.kernel.util.PropsKeys;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -30,43 +35,70 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class NewScreenNameValidatorTest {
 
+	@Mock
+	private Props _props;
+	
+	@Mock
+	private Html _html;
+	
+	@Mock
+	private Language _language;	
+
+	@InjectMocks
+	private NewScreenNameValidator _newScreenNameValidator;
+	
+	private String _correctEmail = "@company.com";
+	
+	private String _screenNameSpecialCaracters = "@._";
+	
 	@Test
 	public void validate_ReturnsFalse_When_StrDoesNotEndsWithCorrectEmail() {
-		Mockito.when(
-			_newScreenNameValidatorMock.getCorrectEmail()
-		).thenReturn(
-			"@correct.com"
-		);
-		Mockito.when(
-			_newScreenNameValidatorMock.validate(
-				Mockito.anyLong(), Mockito.anyString())
-		).thenCallRealMethod();
-
-		boolean actual = _newScreenNameValidatorMock.validate(
-			0L, "joao@email.com");
+		String screenName = "joao@email.com";
+		
+		Mockito.when(_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)).thenReturn(_correctEmail);
+		
+		Mockito.when(_props.get(PropsKeys.USERS_SCREEN_NAME_SPECIAL_CHARACTERS)).thenReturn(_screenNameSpecialCaracters);
+		
+		boolean actual = _newScreenNameValidator.validate(
+			0L, screenName);
 
 		Assert.assertFalse(actual);
 	}
 
 	@Test
 	public void validate_ReturnsTrue_When_StrEndsWithCorrectEmail() {
-		Mockito.when(
-			_newScreenNameValidatorMock.getCorrectEmail()
-		).thenReturn(
-			"@correct.com"
-		);
-		Mockito.when(
-			_newScreenNameValidatorMock.validate(
-				Mockito.anyLong(), Mockito.anyString())
-		).thenCallRealMethod();
+		String screenName = "joao" + _correctEmail;
 
-		boolean actual = _newScreenNameValidatorMock.validate(
-			0L, "joao@correct.com");
+		Mockito.when(_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)).thenReturn(_correctEmail);
+		
+		Mockito.when(_props.get(PropsKeys.USERS_SCREEN_NAME_SPECIAL_CHARACTERS)).thenReturn(_screenNameSpecialCaracters);
+		
+		boolean actual = _newScreenNameValidator.validate(
+			0L, screenName);
 
 		Assert.assertTrue(actual);
 	}
 
-	@Mock
-	private NewScreenNameValidator _newScreenNameValidatorMock;
+	@Test
+	public void validate_ReturnsFalse_When_StrHasInvalidCaracter() {
+		String screenName = "joao/" + _correctEmail;
+		
+		Mockito.when(_props.get(PropsKeys.USERS_SCREEN_NAME_SPECIAL_CHARACTERS)).thenReturn(_screenNameSpecialCaracters);
+		
+		boolean actual = _newScreenNameValidator.validate(
+			0L, screenName);
+
+		Assert.assertFalse(actual);
+	}
+
+	@Test
+	public void validate_ReturnsFalse_When_StrEndsWithNoEmail() {
+		String screenName = "joao";
+				
+		boolean actual = _newScreenNameValidator.validate(
+			0L, screenName);
+
+		Assert.assertFalse(actual);
+	}
 
 }
