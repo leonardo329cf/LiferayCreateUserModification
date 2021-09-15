@@ -1,5 +1,18 @@
-package com.liferay.validator;
+/**
+ * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
+ *
+ * This library is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ *
+ * This library is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ */
 
+package com.liferay.formatter.validator.service;
 
 import com.liferay.formatter.keys.NewFormatterKeys;
 import com.liferay.petra.string.CharPool;
@@ -21,9 +34,9 @@ import org.osgi.service.component.annotations.Component;
  * @author leonardo.ferreira
  */
 @Component(
-		immediate = true, property = "service.ranking:Integer=100",
-		service = ScreenNameValidator.class
-	)
+	immediate = true, property = "service.ranking:Integer=100",
+	service = ScreenNameValidator.class
+)
 public class NewScreenNameValidator implements ScreenNameValidator {
 
 	public static final String POSTFIX = "postfix";
@@ -35,29 +48,31 @@ public class NewScreenNameValidator implements ScreenNameValidator {
 				"]');if (val.match(pattern)) {return false;}return true;}";
 	}
 
+	public String getCorrectEmail() {
+		return PropsUtil.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL);
+	}
+
 	@Override
 	public String getDescription(Locale locale) {
 		return LanguageUtil.format(
 			locale,
-			"the-screen-name-needs-to-have-correct-email-suffix-if-is-email-or-cannot-contain-reserved-word",
-			new String[] {getCorrectEmail(), POSTFIX, getSpecialChars()}, false);
+			"the-screen-name-needs-to-have-correct-email-suffix-if-is-email-" +
+				"or-cannot-contain-reserved-word",
+			new String[] {getCorrectEmail(), POSTFIX, getSpecialChars()},
+			false);
 	}
 
 	@Override
 	public boolean validate(long companyId, String screenName) {
-		
-		if (!Validator.isEmailAddress(screenName) || 
+		if (!Validator.isEmailAddress(screenName) ||
 			StringUtil.equalsIgnoreCase(screenName, POSTFIX) ||
 			hasInvalidChars(screenName) ||
-			!screenName.endsWith(getCorrectEmail())
-			) {
+			!screenName.endsWith(getCorrectEmail())) {
+
 			return false;
 		}
+
 		return true;
-	}
-	
-	public String getCorrectEmail() {
-		return PropsUtil.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL);
 	}
 
 	protected String getJSEscapedSpecialChars() {
@@ -100,4 +115,5 @@ public class NewScreenNameValidator implements ScreenNameValidator {
 	private String _jsEscapedSpecialChars;
 	private String _specialChars;
 	private String _specialCharsRegex;
+
 }
