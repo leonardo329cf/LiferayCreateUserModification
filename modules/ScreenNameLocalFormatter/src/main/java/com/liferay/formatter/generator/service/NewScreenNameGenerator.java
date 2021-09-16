@@ -50,13 +50,7 @@ public class NewScreenNameGenerator implements ScreenNameGenerator {
 
 		screenName = StringUtil.toLowerCase(screenName);
 
-		for (char c : screenName.toCharArray()) {
-			if (!Validator.isChar(c) && !Validator.isDigit(c) &&
-				(c != CharPool.DASH) && (c != CharPool.PERIOD)) {
-
-				screenName = StringUtil.replace(screenName, c, CharPool.PERIOD);
-			}
-		}
+		screenName = _removeUnwantedCaracters(screenName);
 
 		screenName = screenName.concat(
 			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL));
@@ -115,6 +109,18 @@ public class NewScreenNameGenerator implements ScreenNameGenerator {
 				return tempScreenName;
 			}
 		}
+	}
+
+	private String _removeUnwantedCaracters(String screenName) {
+		for (char c : screenName.toCharArray()) {
+			if (!Validator.isChar(c) && !Validator.isDigit(c) &&
+				(c != CharPool.DASH) && (c != CharPool.PERIOD)) {
+
+				screenName = StringUtil.replace(screenName, c, CharPool.PERIOD);
+			}
+		}
+
+		return screenName;
 	}
 
 	@Reference
