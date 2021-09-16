@@ -20,15 +20,16 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.ScreenNameGenerator;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
-import com.liferay.portal.kernel.service.UserLocalServiceUtil;
-import com.liferay.portal.kernel.util.PrefsPropsUtil;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.PrefsProps;
+import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author leonardo.ferreira
@@ -58,9 +59,9 @@ public class NewScreenNameGenerator implements ScreenNameGenerator {
 		}
 
 		screenName = screenName.concat(
-			PropsUtil.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL));
+			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL));
 
-		String[] reservedScreenNames = PrefsPropsUtil.getStringArray(
+		String[] reservedScreenNames = _prefsProps.getStringArray(
 			companyId, PropsKeys.ADMIN_RESERVED_SCREEN_NAMES,
 			StringPool.NEW_LINE, _getAdminReservedScreenNames());
 
@@ -70,14 +71,14 @@ public class NewScreenNameGenerator implements ScreenNameGenerator {
 			}
 		}
 
-		User user = UserLocalServiceUtil.fetchUserByScreenName(
+		User user = _userLocalService.fetchUserByScreenName(
 			companyId, screenName);
 
 		if (user != null) {
 			return _getUnusedScreenName(companyId, screenName);
 		}
 
-		Group friendlyURLGroup = GroupLocalServiceUtil.fetchFriendlyURLGroup(
+		Group friendlyURLGroup = _groupLocalService.fetchFriendlyURLGroup(
 			companyId, StringPool.SLASH + screenName);
 
 		if (friendlyURLGroup == null) {
@@ -89,7 +90,7 @@ public class NewScreenNameGenerator implements ScreenNameGenerator {
 
 	private String[] _getAdminReservedScreenNames() {
 		return StringUtil.splitLines(
-			PropsUtil.get(PropsKeys.ADMIN_RESERVED_SCREEN_NAMES));
+			_props.get(PropsKeys.ADMIN_RESERVED_SCREEN_NAMES));
 	}
 
 	private String _getUnusedScreenName(long companyId, String screenName) {
@@ -98,24 +99,34 @@ public class NewScreenNameGenerator implements ScreenNameGenerator {
 				StringUtil.extractFirst(screenName, CharPool.AT) + i;
 
 			tempScreenName = tempScreenName.concat(
-				PropsUtil.get(
-					NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL));
+				_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL));
 
-			User user = UserLocalServiceUtil.fetchUserByScreenName(
+			User user = _userLocalService.fetchUserByScreenName(
 				companyId, tempScreenName);
 
 			if (user != null) {
 				continue;
 			}
 
-			Group friendlyURLGroup =
-				GroupLocalServiceUtil.fetchFriendlyURLGroup(
-					companyId, StringPool.SLASH + tempScreenName);
+			Group friendlyURLGroup = _groupLocalService.fetchFriendlyURLGroup(
+				companyId, StringPool.SLASH + tempScreenName);
 
 			if (friendlyURLGroup == null) {
 				return tempScreenName;
 			}
 		}
 	}
+
+	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private PrefsProps _prefsProps;
+
+	@Reference
+	private Props _props;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }
