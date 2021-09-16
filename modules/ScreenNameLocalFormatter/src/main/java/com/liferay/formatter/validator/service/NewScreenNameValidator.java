@@ -49,10 +49,6 @@ public class NewScreenNameValidator implements ScreenNameValidator {
 				"]');if (val.match(pattern)) {return false;}return true;}";
 	}
 
-	private String _getCorrectEmail() {
-		return _props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL);
-	}
-
 	@Override
 	public String getDescription(Locale locale) {
 		return _language.format(
@@ -110,19 +106,25 @@ public class NewScreenNameValidator implements ScreenNameValidator {
 			"[A-Za-z0-9" + getSpecialCharsRegex() + "]+");
 	}
 
+	private String _getCorrectEmail() {
+		return _props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL);
+	}
+
 	private static final Pattern _escapeRegexPattern = Pattern.compile(
 		"[-+\\\\\\[\\]]");
 
-	private String _jsEscapedSpecialChars;
-	private String _specialChars;
-	private String _specialCharsRegex;
-	
-	@Reference
-	private Props _props;
-	
 	@Reference
 	private Html _html;
-	
+
+	private String _jsEscapedSpecialChars;
+
 	@Reference
-	private Language _language;	
+	private Language _language;
+
+	@Reference
+	private Props _props;
+
+	private String _specialChars;
+	private String _specialCharsRegex;
+
 }
