@@ -16,7 +16,6 @@ package com.liferay.formatter.validator.service.test;
 
 import com.liferay.formatter.validator.service.NewScreenNameValidator;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,12 +34,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 @RunWith(PowerMockRunner.class)
 public class NewScreenNameValidatorTest {
 
-	@After
-	public void after() {
-	}
-
 	@Before
-	public void before() throws Exception {
+	public void setup() throws Exception {
 		_newScreenNameValidator = PowerMockito.spy(
 			new NewScreenNameValidator());
 
@@ -48,13 +43,6 @@ public class NewScreenNameValidatorTest {
 			_correctEmail
 		).when(
 			_newScreenNameValidator, "_getCorrectEmail"
-		);
-
-		PowerMockito.doReturn(
-			false
-		).when(
-			_newScreenNameValidator, "hasInvalidChars",
-			ArgumentMatchers.anyString()
 		);
 	}
 
