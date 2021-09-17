@@ -57,10 +57,10 @@ public class NewUserLocalServiceWrapper extends UserLocalServiceWrapper {
 			Locale locale, String firstName, String middleName, String lastName)
 		throws PortalException {
 
-		String screenNamewithEmail = _addEmailIfIsNotEmail(screenName);
+		String screenNameWithEmail = _addEmailIfIsNotEmail(screenName);
 
 		return getWrappedService().addDefaultAdminUser(
-			companyId, screenNamewithEmail, emailAddress, locale, firstName,
+			companyId, screenNameWithEmail, emailAddress, locale, firstName,
 			middleName, lastName);
 	}
 
@@ -120,11 +120,11 @@ public class NewUserLocalServiceWrapper extends UserLocalServiceWrapper {
 			boolean sendEmail, ServiceContext serviceContext)
 		throws PortalException {
 
-		String screenNamewithEmail = _addEmailIfIsNotEmail(screenName);
+		String screenNameWithEmail = _addEmailIfIsNotEmail(screenName);
 
 		return getWrappedService().addUser(
 			creatorUserId, companyId, autoPassword, password1, password2,
-			autoScreenName, screenNamewithEmail, emailAddress, locale,
+			autoScreenName, screenNameWithEmail, emailAddress, locale,
 			firstName, middleName, lastName, prefixId, suffixId, male,
 			birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds,
 			organizationIds, roleIds, userGroupIds, sendEmail, serviceContext);
@@ -192,11 +192,11 @@ public class NewUserLocalServiceWrapper extends UserLocalServiceWrapper {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		String screenNamewithEmail = _addEmailIfIsNotEmail(screenName);
+		String screenNameWithEmail = _addEmailIfIsNotEmail(screenName);
 
 		return getWrappedService().addUser(
 			creatorUserId, companyId, autoPassword, password1, password2,
-			autoScreenName, screenNamewithEmail, emailAddress, facebookId,
+			autoScreenName, screenNameWithEmail, emailAddress, facebookId,
 			openId, locale, firstName, middleName, lastName, prefixId, suffixId,
 			male, birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds,
 			organizationIds, roleIds, userGroupIds, sendEmail, serviceContext);
@@ -258,11 +258,11 @@ public class NewUserLocalServiceWrapper extends UserLocalServiceWrapper {
 			boolean sendEmail, ServiceContext serviceContext)
 		throws PortalException {
 
-		String screenNamewithEmail = _addEmailIfIsNotEmail(screenName);
+		String screenNameWithEmail = _addEmailIfIsNotEmail(screenName);
 
 		return getWrappedService().addUserWithWorkflow(
 			creatorUserId, companyId, autoPassword, password1, password2,
-			autoScreenName, screenNamewithEmail, emailAddress, locale,
+			autoScreenName, screenNameWithEmail, emailAddress, locale,
 			firstName, middleName, lastName, prefixId, suffixId, male,
 			birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds,
 			organizationIds, roleIds, userGroupIds, sendEmail, serviceContext);
@@ -330,11 +330,11 @@ public class NewUserLocalServiceWrapper extends UserLocalServiceWrapper {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		String screenNamewithEmail = _addEmailIfIsNotEmail(screenName);
+		String screenNameWithEmail = _addEmailIfIsNotEmail(screenName);
 
 		return getWrappedService().addUserWithWorkflow(
 			creatorUserId, companyId, autoPassword, password1, password2,
-			autoScreenName, screenNamewithEmail, emailAddress, facebookId,
+			autoScreenName, screenNameWithEmail, emailAddress, facebookId,
 			openId, locale, firstName, middleName, lastName, prefixId, suffixId,
 			male, birthdayMonth, birthdayDay, birthdayYear, jobTitle, groupIds,
 			organizationIds, roleIds, userGroupIds, sendEmail, serviceContext);
