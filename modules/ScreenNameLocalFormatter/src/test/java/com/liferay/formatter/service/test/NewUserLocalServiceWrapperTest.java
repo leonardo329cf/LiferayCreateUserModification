@@ -14,6 +14,9 @@
 
 package com.liferay.formatter.service.test;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.liferay.formatter.keys.NewFormatterKeys;
 import com.liferay.formatter.service.NewUserLocalServiceWrapper;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -36,13 +39,15 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class NewUserLocalServiceWrapperTest {
 
+	// addDefaultAdminUser tests
+
 	@Test
 	public void addDefaultAdminUser_Calls_BaseMethodImplementation_With_ScreenNameWithEmailSuffixAdded_When_ScreenNameIsNotEmail_And_IsNotNull_And_IsNotEmpty()
 		throws PortalException {
 
 		String screenName = "user";
 
-		Mockito.when(
+		when(
 			_userLocalService.addDefaultAdminUser(
 				Mockito.anyLong(), Mockito.any(), Mockito.anyString(),
 				Mockito.any(), Mockito.anyString(), Mockito.anyString(),
@@ -56,7 +61,7 @@ public class NewUserLocalServiceWrapperTest {
 		_newUserLocalServiceWrapper.addDefaultAdminUser(
 			0L, screenName, "user@email.com", null, "user", "user", "user");
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addDefaultAdminUser(
 			Mockito.anyLong(), Mockito.eq(expected), Mockito.anyString(),
@@ -65,15 +70,13 @@ public class NewUserLocalServiceWrapperTest {
 		);
 	}
 
-	// addDefaultAdminUser tests
-
 	@Test
 	public void addDefaultAdminUser_Calls_BaseMethodImplementation_With_UnmodifiedScreenName_When_ScreenNameIsAnEmailAddress()
 		throws PortalException {
 
 		String screenName = "user" + _anyEmailSuffix;
 
-		Mockito.when(
+		when(
 			_userLocalService.addDefaultAdminUser(
 				Mockito.anyLong(), Mockito.any(), Mockito.anyString(),
 				Mockito.any(), Mockito.anyString(), Mockito.anyString(),
@@ -87,7 +90,7 @@ public class NewUserLocalServiceWrapperTest {
 		_newUserLocalServiceWrapper.addDefaultAdminUser(
 			0L, screenName, "user@email.com", null, "user", "user", "user");
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addDefaultAdminUser(
 			Mockito.anyLong(), Mockito.eq(expected), Mockito.anyString(),
@@ -102,7 +105,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = "";
 
-		Mockito.when(
+		when(
 			_userLocalService.addDefaultAdminUser(
 				Mockito.anyLong(), Mockito.any(), Mockito.anyString(),
 				Mockito.any(), Mockito.anyString(), Mockito.anyString(),
@@ -116,7 +119,7 @@ public class NewUserLocalServiceWrapperTest {
 		_newUserLocalServiceWrapper.addDefaultAdminUser(
 			0L, screenName, "user@email.com", null, "user", "user", "user");
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addDefaultAdminUser(
 			Mockito.anyLong(), Mockito.eq(expected), Mockito.anyString(),
@@ -131,7 +134,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = null;
 
-		Mockito.when(
+		when(
 			_userLocalService.addDefaultAdminUser(
 				Mockito.anyLong(), Mockito.any(), Mockito.anyString(),
 				Mockito.any(), Mockito.anyString(), Mockito.anyString(),
@@ -145,7 +148,7 @@ public class NewUserLocalServiceWrapperTest {
 		_newUserLocalServiceWrapper.addDefaultAdminUser(
 			0L, screenName, "user@email.com", null, "user", "user", "user");
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addDefaultAdminUser(
 			Mockito.anyLong(), Mockito.eq(expected), Mockito.anyString(),
@@ -160,7 +163,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = "user";
 
-		Mockito.when(
+		when(
 			_userLocalService.addUser(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
@@ -181,7 +184,7 @@ public class NewUserLocalServiceWrapperTest {
 			0, 0, false, "", "", false, screenName, "", null, "", "", "", 0, 0,
 			false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addUser(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
@@ -203,7 +206,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = "user" + _anyEmailSuffix;
 
-		Mockito.when(
+		when(
 			_userLocalService.addUser(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
@@ -224,7 +227,7 @@ public class NewUserLocalServiceWrapperTest {
 			0, 0, false, "", "", false, screenName, "", null, "", "", "", 0, 0,
 			false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addUser(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
@@ -244,7 +247,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = null;
 
-		Mockito.when(
+		when(
 			_userLocalService.addUser(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
@@ -265,7 +268,7 @@ public class NewUserLocalServiceWrapperTest {
 			0, 0, false, "", "", false, screenName, "", null, "", "", "", 0, 0,
 			false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addUser(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
@@ -285,7 +288,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = null;
 
-		Mockito.when(
+		when(
 			_userLocalService.addUser(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
@@ -306,7 +309,7 @@ public class NewUserLocalServiceWrapperTest {
 			0, 0, false, "", "", false, screenName, "", null, "", "", "", 0, 0,
 			false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addUser(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
@@ -326,7 +329,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = "user";
 
-		Mockito.when(
+		when(
 			_userLocalService.addUser(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
@@ -347,7 +350,7 @@ public class NewUserLocalServiceWrapperTest {
 			0, 0, false, "", "", false, screenName, "", 0, "", null, "", "", "",
 			0, 0, false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addUser(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
@@ -370,7 +373,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = "user" + _anyEmailSuffix;
 
-		Mockito.when(
+		when(
 			_userLocalService.addUser(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
@@ -391,7 +394,7 @@ public class NewUserLocalServiceWrapperTest {
 			0, 0, false, "", "", false, screenName, "", 0, "", null, "", "", "",
 			0, 0, false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addUser(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
@@ -412,7 +415,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = "";
 
-		Mockito.when(
+		when(
 			_userLocalService.addUser(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
@@ -433,7 +436,7 @@ public class NewUserLocalServiceWrapperTest {
 			0, 0, false, "", "", false, screenName, "", 0, "", null, "", "", "",
 			0, 0, false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addUser(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
@@ -454,7 +457,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = null;
 
-		Mockito.when(
+		when(
 			_userLocalService.addUser(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
@@ -475,7 +478,7 @@ public class NewUserLocalServiceWrapperTest {
 			0, 0, false, "", "", false, screenName, "", 0, "", null, "", "", "",
 			0, 0, false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addUser(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
@@ -496,7 +499,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = "user";
 
-		Mockito.when(
+		when(
 			_userLocalService.addUserWithWorkflow(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
@@ -517,7 +520,7 @@ public class NewUserLocalServiceWrapperTest {
 			0, 0, false, "", "", false, screenName, "", null, "", "", "", 0, 0,
 			false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addUserWithWorkflow(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
@@ -539,7 +542,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = "user" + _correctEmailSuffix;
 
-		Mockito.when(
+		when(
 			_userLocalService.addUserWithWorkflow(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
@@ -560,7 +563,7 @@ public class NewUserLocalServiceWrapperTest {
 			0, 0, false, "", "", false, screenName, "", null, "", "", "", 0, 0,
 			false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addUserWithWorkflow(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
@@ -580,7 +583,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = "";
 
-		Mockito.when(
+		when(
 			_userLocalService.addUserWithWorkflow(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
@@ -601,7 +604,7 @@ public class NewUserLocalServiceWrapperTest {
 			0, 0, false, "", "", false, screenName, "", null, "", "", "", 0, 0,
 			false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addUserWithWorkflow(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
@@ -621,7 +624,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = null;
 
-		Mockito.when(
+		when(
 			_userLocalService.addUserWithWorkflow(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
@@ -642,7 +645,7 @@ public class NewUserLocalServiceWrapperTest {
 			0, 0, false, "", "", false, screenName, "", null, "", "", "", 0, 0,
 			false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addUserWithWorkflow(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
@@ -662,7 +665,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = "user";
 
-		Mockito.when(
+		when(
 			_userLocalService.addUserWithWorkflow(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
@@ -683,7 +686,7 @@ public class NewUserLocalServiceWrapperTest {
 			0, 0, false, "", "", false, screenName, "", 0, "", null, "", "", "",
 			0, 0, false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addUserWithWorkflow(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
@@ -706,7 +709,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = "user" + _correctEmailSuffix;
 
-		Mockito.when(
+		when(
 			_userLocalService.addUserWithWorkflow(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
@@ -727,7 +730,7 @@ public class NewUserLocalServiceWrapperTest {
 			0, 0, false, "", "", false, screenName, "", 0, "", null, "", "", "",
 			0, 0, false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addUserWithWorkflow(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
@@ -748,7 +751,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = "";
 
-		Mockito.when(
+		when(
 			_userLocalService.addUserWithWorkflow(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
@@ -769,7 +772,7 @@ public class NewUserLocalServiceWrapperTest {
 			0, 0, false, "", "", false, screenName, "", 0, "", null, "", "", "",
 			0, 0, false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addUserWithWorkflow(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
@@ -790,7 +793,7 @@ public class NewUserLocalServiceWrapperTest {
 
 		String screenName = null;
 
-		Mockito.when(
+		when(
 			_userLocalService.addUserWithWorkflow(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
@@ -811,7 +814,7 @@ public class NewUserLocalServiceWrapperTest {
 			0, 0, false, "", "", false, screenName, "", 0, "", null, "", "", "",
 			0, 0, false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		Mockito.verify(
+		verify(
 			_userLocalService
 		).addUserWithWorkflow(
 			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
@@ -828,7 +831,7 @@ public class NewUserLocalServiceWrapperTest {
 
 	@Before
 	public void setup() {
-		Mockito.when(
+		when(
 			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
 		).thenReturn(
 			_correctEmailSuffix

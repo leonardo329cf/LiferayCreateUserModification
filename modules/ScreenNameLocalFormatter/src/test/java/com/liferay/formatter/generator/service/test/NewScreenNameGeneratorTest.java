@@ -14,6 +14,10 @@
 
 package com.liferay.formatter.generator.service.test;
 
+import static org.junit.Assert.assertEquals;
+
+import static org.mockito.Mockito.when;
+
 import com.liferay.formatter.generator.service.NewScreenNameGenerator;
 import com.liferay.formatter.keys.NewFormatterKeys;
 import com.liferay.petra.string.StringPool;
@@ -25,7 +29,6 @@ import com.liferay.portal.kernel.util.PrefsProps;
 import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,18 +47,18 @@ public class NewScreenNameGeneratorTest {
 
 	@Before
 	public void setup() {
-		Mockito.when(
+		when(
 			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
 		).thenReturn(
 			_correctEmail
 		);
-		Mockito.when(
+		when(
 			_props.get(PropsKeys.ADMIN_RESERVED_SCREEN_NAMES)
 		).thenReturn(
 			_adminReservedScreenNames
 		);
 
-		Mockito.when(
+		when(
 			_prefsProps.getStringArray(
 				Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.any())
@@ -71,14 +74,14 @@ public class NewScreenNameGeneratorTest {
 		String input = "user@liferay.com";
 		String expected = "user" + _correctEmail;
 
-		Mockito.when(
+		when(
 			_userLocalService.fetchUserByScreenName(
 				Mockito.anyLong(), Mockito.anyString())
 		).thenReturn(
 			null
 		);
 
-		Mockito.when(
+		when(
 			_groupLocalService.fetchFriendlyURLGroup(
 				Mockito.anyLong(), Mockito.anyString())
 		).thenReturn(
@@ -87,7 +90,7 @@ public class NewScreenNameGeneratorTest {
 
 		String result = _newScreenNameGenerator.generate(0L, 0L, input);
 
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -98,14 +101,14 @@ public class NewScreenNameGeneratorTest {
 		String prefix = "user";
 		String expected = "user1" + _correctEmail;
 
-		Mockito.when(
+		when(
 			_userLocalService.fetchUserByScreenName(
 				Mockito.anyLong(), Mockito.anyString())
 		).thenReturn(
 			null
 		);
 
-		Mockito.when(
+		when(
 			_groupLocalService.fetchFriendlyURLGroup(
 				Mockito.anyLong(),
 				Mockito.eq(StringPool.SLASH + prefix + _correctEmail))
@@ -115,7 +118,7 @@ public class NewScreenNameGeneratorTest {
 
 		String result = _newScreenNameGenerator.generate(0L, 0L, input);
 
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	@Test
@@ -128,14 +131,14 @@ public class NewScreenNameGeneratorTest {
 
 		String expected = prefix + "1" + _correctEmail;
 
-		Mockito.when(
+		when(
 			_userLocalService.fetchUserByScreenName(
 				Mockito.anyLong(), Mockito.eq(prefix + _correctEmail))
 		).thenReturn(
 			_userWrapperMock
 		);
 
-		Mockito.when(
+		when(
 			_userLocalService.fetchUserByScreenName(
 				Mockito.anyLong(),
 				AdditionalMatchers.not(Mockito.eq(prefix + _correctEmail)))
@@ -143,7 +146,7 @@ public class NewScreenNameGeneratorTest {
 			null
 		);
 
-		Mockito.when(
+		when(
 			_groupLocalService.fetchFriendlyURLGroup(
 				Mockito.anyLong(), Mockito.anyString())
 		).thenReturn(
@@ -152,7 +155,7 @@ public class NewScreenNameGeneratorTest {
 
 		String result = _newScreenNameGenerator.generate(0L, 0L, input);
 
-		Assert.assertEquals(expected, result);
+		assertEquals(expected, result);
 	}
 
 	private final String _adminReservedScreenNames = "ADMIN\nAdmin\nadmin";
