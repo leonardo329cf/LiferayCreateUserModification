@@ -14,43 +14,62 @@
 
 package com.liferay.formatter.validator.service.test;
 
-import com.liferay.formatter.keys.NewFormatterKeys;
 import com.liferay.formatter.validator.service.NewScreenNameValidator;
-import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.util.Html;
-import com.liferay.portal.kernel.util.Props;
-import com.liferay.portal.kernel.util.PropsKeys;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.ArgumentMatchers;
+
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  * @author leonardo.ferreira
  */
-@RunWith(MockitoJUnitRunner.class)
+@PrepareForTest(NewScreenNameValidator.class)
+@RunWith(PowerMockRunner.class)
 public class NewScreenNameValidatorTest {
 
-	@Test
-	public void validate_ReturnsFalse_When_StrDoesNotEndsWithCorrectEmail() {
-		String screenName = "joao@email.com";
+	@After
+	public void after() {
+	}
 
-		Mockito.when(
-			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
-		).thenReturn(
+	@Before
+	public void before() throws Exception {
+		_newScreenNameValidator = PowerMockito.spy(
+			new NewScreenNameValidator());
+
+		PowerMockito.doReturn(
 			_correctEmail
+		).when(
+			_newScreenNameValidator, "_getCorrectEmail"
 		);
 
-		Mockito.when(
-			_props.get(PropsKeys.USERS_SCREEN_NAME_SPECIAL_CHARACTERS)
-		).thenReturn(
-			_screenNameSpecialCaracters
+		PowerMockito.doReturn(
+			false
+		).when(
+			_newScreenNameValidator, "hasInvalidChars",
+			ArgumentMatchers.anyString()
 		);
+	}
+
+	@Test
+	public void validate_ReturnsFalse_When_StrDoesNotEndsWithCorrectEmail()
+		throws Exception {
+
+		PowerMockito.doReturn(
+			false
+		).when(
+			_newScreenNameValidator, "hasInvalidChars",
+			ArgumentMatchers.anyString()
+		);
+
+		String screenName = "joao@email.com";
 
 		boolean actual = _newScreenNameValidator.validate(0L, screenName);
 
@@ -58,7 +77,16 @@ public class NewScreenNameValidatorTest {
 	}
 
 	@Test
-	public void validate_ReturnsFalse_When_StrEndsWithNoEmail() {
+	public void validate_ReturnsFalse_When_StrEndsWithNoEmail()
+		throws Exception {
+
+		PowerMockito.doReturn(
+			false
+		).when(
+			_newScreenNameValidator, "hasInvalidChars",
+			ArgumentMatchers.anyString()
+		);
+
 		String screenName = "joao";
 
 		boolean actual = _newScreenNameValidator.validate(0L, screenName);
@@ -67,13 +95,16 @@ public class NewScreenNameValidatorTest {
 	}
 
 	@Test
-	public void validate_ReturnsFalse_When_StrHasInvalidCaracter() {
+	public void validate_ReturnsFalse_When_StrHasInvalidCaracter()
+		throws Exception {
+
 		String screenName = "joao/" + _correctEmail;
 
-		Mockito.when(
-			_props.get(PropsKeys.USERS_SCREEN_NAME_SPECIAL_CHARACTERS)
-		).thenReturn(
-			_screenNameSpecialCaracters
+		PowerMockito.doReturn(
+			true
+		).when(
+			_newScreenNameValidator, "hasInvalidChars",
+			ArgumentMatchers.anyString()
 		);
 
 		boolean actual = _newScreenNameValidator.validate(0L, screenName);
@@ -82,19 +113,16 @@ public class NewScreenNameValidatorTest {
 	}
 
 	@Test
-	public void validate_ReturnsTrue_When_StrEndsWithCorrectEmail() {
+	public void validate_ReturnsTrue_When_StrEndsWithCorrectEmail()
+		throws Exception {
+
 		String screenName = "joao" + _correctEmail;
 
-		Mockito.when(
-			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
-		).thenReturn(
-			_correctEmail
-		);
-
-		Mockito.when(
-			_props.get(PropsKeys.USERS_SCREEN_NAME_SPECIAL_CHARACTERS)
-		).thenReturn(
-			_screenNameSpecialCaracters
+		PowerMockito.doReturn(
+			false
+		).when(
+			_newScreenNameValidator, "hasInvalidChars",
+			ArgumentMatchers.anyString()
 		);
 
 		boolean actual = _newScreenNameValidator.validate(0L, screenName);
@@ -103,19 +131,6 @@ public class NewScreenNameValidatorTest {
 	}
 
 	private String _correctEmail = "@company.com";
-
-	@Mock
-	private Html _html;
-
-	@Mock
-	private Language _language;
-
-	@InjectMocks
 	private NewScreenNameValidator _newScreenNameValidator;
-
-	@Mock
-	private Props _props;
-
-	private String _screenNameSpecialCaracters = "@._";
 
 }
