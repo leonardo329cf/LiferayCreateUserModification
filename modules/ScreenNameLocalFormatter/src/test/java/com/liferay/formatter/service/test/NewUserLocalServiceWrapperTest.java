@@ -21,7 +21,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Props;
 
-import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,37 +37,55 @@ import org.mockito.junit.MockitoJUnitRunner;
 public class NewUserLocalServiceWrapperTest {
 
 	@Test
-	public void addDefaultAdminUser_Calls_userLocalService_addDefaultAdminUser_With_addEmailIfIsNotEmail_Result()
+	public void addDefaultAdminUser_Calls_BaseMethodImplementation_With_ScreenNameWithEmailSuffixAdded_When_ScreenNameIsNotEmail_And_IsNotNull_And_IsNotEmpty()
 		throws PortalException {
-
-		// Arrange
 
 		String screenName = "user";
 
 		Mockito.when(
-			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
-		).thenReturn(
-			_correctEmailSufix
-		);
-
-		Mockito.when(
 			_userLocalService.addDefaultAdminUser(
-				Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyLong(), Mockito.any(), Mockito.anyString(),
 				Mockito.any(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyString())
 		).thenReturn(
 			_user
 		);
 
-		String expected = _newUserLocalServiceWrapper.addEmailIfIsNotEmail(
-			screenName);
-
-		// Act
+		String expected = screenName + _correctEmailSuffix;
 
 		_newUserLocalServiceWrapper.addDefaultAdminUser(
 			0L, screenName, "user@email.com", null, "user", "user", "user");
 
-		// Assert
+		Mockito.verify(
+			_userLocalService
+		).addDefaultAdminUser(
+			Mockito.anyLong(), Mockito.eq(expected), Mockito.anyString(),
+			Mockito.any(), Mockito.anyString(), Mockito.anyString(),
+			Mockito.anyString()
+		);
+	}
+
+	// addDefaultAdminUser tests
+
+	@Test
+	public void addDefaultAdminUser_Calls_BaseMethodImplementation_With_UnmodifiedScreenName_When_ScreenNameIsAnEmailAddress()
+		throws PortalException {
+
+		String screenName = "user" + _anyEmailSuffix;
+
+		Mockito.when(
+			_userLocalService.addDefaultAdminUser(
+				Mockito.anyLong(), Mockito.any(), Mockito.anyString(),
+				Mockito.any(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyString())
+		).thenReturn(
+			_user
+		);
+
+		String expected = screenName;
+
+		_newUserLocalServiceWrapper.addDefaultAdminUser(
+			0L, screenName, "user@email.com", null, "user", "user", "user");
 
 		Mockito.verify(
 			_userLocalService
@@ -79,98 +97,74 @@ public class NewUserLocalServiceWrapperTest {
 	}
 
 	@Test
-	public void addEmailIfIsNotEmail_Returns_ScreenName_When_ScreenName_IsEmail() {
-
-		// Arrange
-
-		String screenName = "user@email.com";
-		String expected = "user@email.com";
-
-		// Act
-
-		String actual = _newUserLocalServiceWrapper.addEmailIfIsNotEmail(
-			screenName);
-
-		//Assert
-		Assert.assertEquals(expected, actual);
-	}
-
-	@Test
-	public void addEmailIfIsNotEmail_Returns_ScreenName_When_ScreenName_IsEmpty() {
-
-		// Arrange
+	public void addDefaultAdminUser_Calls_BaseMethodImplementationOfAddDefaultAdminUser_With_EmptyScreenName_When_ScreenNameIsEmpty()
+		throws PortalException {
 
 		String screenName = "";
 
-		String expected = "";
+		Mockito.when(
+			_userLocalService.addDefaultAdminUser(
+				Mockito.anyLong(), Mockito.any(), Mockito.anyString(),
+				Mockito.any(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyString())
+		).thenReturn(
+			_user
+		);
 
-		// Act
+		String expected = screenName;
 
-		String actual = _newUserLocalServiceWrapper.addEmailIfIsNotEmail(
-			screenName);
+		_newUserLocalServiceWrapper.addDefaultAdminUser(
+			0L, screenName, "user@email.com", null, "user", "user", "user");
 
-		//Assert
-		Assert.assertEquals(expected, actual);
+		Mockito.verify(
+			_userLocalService
+		).addDefaultAdminUser(
+			Mockito.anyLong(), Mockito.eq(expected), Mockito.anyString(),
+			Mockito.any(), Mockito.anyString(), Mockito.anyString(),
+			Mockito.anyString()
+		);
 	}
 
 	@Test
-	public void addEmailIfIsNotEmail_Returns_ScreenName_When_ScreenName_IsNull() {
-
-		// Arrange
+	public void addDefaultAdminUser_Calls_BaseMethodImplementationOfAddDefaultAdminUser_With_NullScreenName_When_ScreenNameIsNull()
+		throws PortalException {
 
 		String screenName = null;
-		String expected = null;
 
-		// Act
-
-		String actual = _newUserLocalServiceWrapper.addEmailIfIsNotEmail(
-			screenName);
-
-		//Assert
-		Assert.assertEquals(expected, actual);
-	}
-
-	@Test
-	public void addEmailIfIsNotEmail_Returns_ScreenNameConcatWithCompanyEmail_When_ScreenName_IsNotEmail_Or_IsNotNull_Or_IsNotEmpty() {
-
-		// Arrange
-
-		String screenName = "user";
-		String expected = "user@company.com";
 		Mockito.when(
-			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
+			_userLocalService.addDefaultAdminUser(
+				Mockito.anyLong(), Mockito.any(), Mockito.anyString(),
+				Mockito.any(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyString())
 		).thenReturn(
-			_correctEmailSufix
+			_user
 		);
 
-		// Act
+		String expected = screenName;
 
-		String actual = _newUserLocalServiceWrapper.addEmailIfIsNotEmail(
-			screenName);
+		_newUserLocalServiceWrapper.addDefaultAdminUser(
+			0L, screenName, "user@email.com", null, "user", "user", "user");
 
-		//Assert
-		Assert.assertEquals(expected, actual);
+		Mockito.verify(
+			_userLocalService
+		).addDefaultAdminUser(
+			Mockito.anyLong(), Mockito.eq(expected), Mockito.anyString(),
+			Mockito.any(), Mockito.anyString(), Mockito.anyString(),
+			Mockito.anyString()
+		);
 	}
 
 	@Test
-	public void addUser_Calls_userLocalService_addUser_With_addEmailIfIsNotEmail_Result()
+	public void addUser_Calls_BaseMethodImplementation_With_ScreenNameWithEmailSuffixAdded_When_ScreenNameIsNotEmail_And_IsNotNull_And_IsNotEmpty()
 		throws PortalException {
 
-		// Arrange
-
 		String screenName = "user";
-
-		Mockito.when(
-			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
-		).thenReturn(
-			_correctEmailSufix
-		);
 
 		Mockito.when(
 			_userLocalService.addUser(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
-				Mockito.anyString(), Mockito.anyString(), Mockito.any(),
+				Mockito.any(), Mockito.anyString(), Mockito.any(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(),
@@ -181,16 +175,54 @@ public class NewUserLocalServiceWrapperTest {
 			_user
 		);
 
-		String expected = _newUserLocalServiceWrapper.addEmailIfIsNotEmail(
-			screenName);
-
-		// Act
+		String expected = screenName + _correctEmailSuffix;
 
 		_newUserLocalServiceWrapper.addUser(
 			0, 0, false, "", "", false, screenName, "", null, "", "", "", 0, 0,
 			false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		// Assert
+		Mockito.verify(
+			_userLocalService
+		).addUser(
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+			Mockito.eq(expected), Mockito.anyString(), Mockito.any(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(),
+			Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any(),
+			Mockito.any(), Mockito.anyBoolean(), Mockito.any()
+		);
+	}
+
+	// addUser tests
+
+	@Test
+	public void addUser_Calls_BaseMethodImplementation_With_UnmodifiedScreenName_When_ScreenNameIsAnEmailAddress()
+		throws PortalException {
+
+		String screenName = "user" + _anyEmailSuffix;
+
+		Mockito.when(
+			_userLocalService.addUser(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString(), Mockito.any(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(),
+				Mockito.anyString(), Mockito.any(), Mockito.any(),
+				Mockito.any(), Mockito.any(), Mockito.anyBoolean(),
+				Mockito.any())
+		).thenReturn(
+			_user
+		);
+
+		String expected = screenName;
+
+		_newUserLocalServiceWrapper.addUser(
+			0, 0, false, "", "", false, screenName, "", null, "", "", "", 0, 0,
+			false, 0, 0, 0, "", null, null, null, null, false, null);
 
 		Mockito.verify(
 			_userLocalService
@@ -207,24 +239,98 @@ public class NewUserLocalServiceWrapperTest {
 	}
 
 	@Test
-	public void addUserDeprecated_Calls_userLocalService_addUserDeprecated_With_addEmailIfIsNotEmail_Result()
+	public void addUser_Calls_BaseMethodImplementationOfAddDefaultAdminUser_With_EmptyScreenName_When_ScreenNameIsEmpty()
 		throws PortalException {
 
-		// Arrange
-
-		String screenName = "user";
-
-		Mockito.when(
-			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
-		).thenReturn(
-			_correctEmailSufix
-		);
+		String screenName = null;
 
 		Mockito.when(
 			_userLocalService.addUser(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(),
+				Mockito.any(), Mockito.anyString(), Mockito.any(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(),
+				Mockito.anyString(), Mockito.any(), Mockito.any(),
+				Mockito.any(), Mockito.any(), Mockito.anyBoolean(),
+				Mockito.any())
+		).thenReturn(
+			_user
+		);
+
+		String expected = screenName;
+
+		_newUserLocalServiceWrapper.addUser(
+			0, 0, false, "", "", false, screenName, "", null, "", "", "", 0, 0,
+			false, 0, 0, 0, "", null, null, null, null, false, null);
+
+		Mockito.verify(
+			_userLocalService
+		).addUser(
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+			Mockito.eq(expected), Mockito.anyString(), Mockito.any(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(),
+			Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any(),
+			Mockito.any(), Mockito.anyBoolean(), Mockito.any()
+		);
+	}
+
+	@Test
+	public void addUser_Calls_BaseMethodImplementationOfAddDefaultAdminUser_With_NullScreenName_When_ScreenNameIsNull()
+		throws PortalException {
+
+		String screenName = null;
+
+		Mockito.when(
+			_userLocalService.addUser(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString(), Mockito.any(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(),
+				Mockito.anyString(), Mockito.any(), Mockito.any(),
+				Mockito.any(), Mockito.any(), Mockito.anyBoolean(),
+				Mockito.any())
+		).thenReturn(
+			_user
+		);
+
+		String expected = screenName;
+
+		_newUserLocalServiceWrapper.addUser(
+			0, 0, false, "", "", false, screenName, "", null, "", "", "", 0, 0,
+			false, 0, 0, 0, "", null, null, null, null, false, null);
+
+		Mockito.verify(
+			_userLocalService
+		).addUser(
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+			Mockito.eq(expected), Mockito.anyString(), Mockito.any(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(),
+			Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any(),
+			Mockito.any(), Mockito.anyBoolean(), Mockito.any()
+		);
+	}
+
+	@Test
+	public void addUserDeprecated_Calls_BaseMethodImplementation_With_ScreenNameWithEmailSuffixAdded_When_ScreenNameIsNotEmail_And_IsNotNull_And_IsNotEmpty()
+		throws PortalException {
+
+		String screenName = "user";
+
+		Mockito.when(
+			_userLocalService.addUser(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString(), Mockito.anyLong(),
 				Mockito.anyString(), Mockito.any(), Mockito.anyString(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(),
 				Mockito.anyLong(), Mockito.anyBoolean(), Mockito.anyInt(),
@@ -235,16 +341,55 @@ public class NewUserLocalServiceWrapperTest {
 			_user
 		);
 
-		String expected = _newUserLocalServiceWrapper.addEmailIfIsNotEmail(
-			screenName);
-
-		// Act
+		String expected = screenName + _correctEmailSuffix;
 
 		_newUserLocalServiceWrapper.addUser(
 			0, 0, false, "", "", false, screenName, "", 0, "", null, "", "", "",
 			0, 0, false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		// Assert
+		Mockito.verify(
+			_userLocalService
+		).addUser(
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+			Mockito.eq(expected), Mockito.anyString(), Mockito.anyLong(),
+			Mockito.anyString(), Mockito.any(), Mockito.anyString(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(),
+			Mockito.anyLong(), Mockito.anyBoolean(), Mockito.anyInt(),
+			Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(),
+			Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+			Mockito.anyBoolean(), Mockito.any()
+		);
+	}
+
+	// addUserDeprecated tests
+
+	@Test
+	public void addUserDeprecated_Calls_BaseMethodImplementation_With_UnmodifiedScreenName_When_ScreenNameIsAnEmailAddress()
+		throws PortalException {
+
+		String screenName = "user" + _anyEmailSuffix;
+
+		Mockito.when(
+			_userLocalService.addUser(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString(), Mockito.anyLong(),
+				Mockito.anyString(), Mockito.any(), Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(),
+				Mockito.anyLong(), Mockito.anyBoolean(), Mockito.anyInt(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(),
+				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+				Mockito.anyBoolean(), Mockito.any())
+		).thenReturn(
+			_user
+		);
+
+		String expected = screenName;
+
+		_newUserLocalServiceWrapper.addUser(
+			0, 0, false, "", "", false, screenName, "", 0, "", null, "", "", "",
+			0, 0, false, 0, 0, 0, "", null, null, null, null, false, null);
 
 		Mockito.verify(
 			_userLocalService
@@ -262,24 +407,100 @@ public class NewUserLocalServiceWrapperTest {
 	}
 
 	@Test
-	public void addUserWithWorkflow_Calls_userLocalService_addUserWithWorkflow_With_addEmailIfIsNotEmail_Result()
+	public void addUserDeprecated_Calls_BaseMethodImplementationOfAddDefaultAdminUser_With_EmptyScreenName_When_ScreenNameIsEmpty()
 		throws PortalException {
 
-		// Arrange
-
-		String screenName = "user";
+		String screenName = "";
 
 		Mockito.when(
-			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
+			_userLocalService.addUser(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString(), Mockito.anyLong(),
+				Mockito.anyString(), Mockito.any(), Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(),
+				Mockito.anyLong(), Mockito.anyBoolean(), Mockito.anyInt(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(),
+				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+				Mockito.anyBoolean(), Mockito.any())
 		).thenReturn(
-			_correctEmailSufix
+			_user
 		);
+
+		String expected = screenName;
+
+		_newUserLocalServiceWrapper.addUser(
+			0, 0, false, "", "", false, screenName, "", 0, "", null, "", "", "",
+			0, 0, false, 0, 0, 0, "", null, null, null, null, false, null);
+
+		Mockito.verify(
+			_userLocalService
+		).addUser(
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+			Mockito.eq(expected), Mockito.anyString(), Mockito.anyLong(),
+			Mockito.anyString(), Mockito.any(), Mockito.anyString(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(),
+			Mockito.anyLong(), Mockito.anyBoolean(), Mockito.anyInt(),
+			Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(),
+			Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+			Mockito.anyBoolean(), Mockito.any()
+		);
+	}
+
+	@Test
+	public void addUserDeprecated_Calls_BaseMethodImplementationOfAddDefaultAdminUser_With_NullScreenName_When_ScreenNameIsNull()
+		throws PortalException {
+
+		String screenName = null;
+
+		Mockito.when(
+			_userLocalService.addUser(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString(), Mockito.anyLong(),
+				Mockito.anyString(), Mockito.any(), Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(),
+				Mockito.anyLong(), Mockito.anyBoolean(), Mockito.anyInt(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(),
+				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+				Mockito.anyBoolean(), Mockito.any())
+		).thenReturn(
+			_user
+		);
+
+		String expected = screenName;
+
+		_newUserLocalServiceWrapper.addUser(
+			0, 0, false, "", "", false, screenName, "", 0, "", null, "", "", "",
+			0, 0, false, 0, 0, 0, "", null, null, null, null, false, null);
+
+		Mockito.verify(
+			_userLocalService
+		).addUser(
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+			Mockito.eq(expected), Mockito.anyString(), Mockito.anyLong(),
+			Mockito.anyString(), Mockito.any(), Mockito.anyString(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(),
+			Mockito.anyLong(), Mockito.anyBoolean(), Mockito.anyInt(),
+			Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(),
+			Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+			Mockito.anyBoolean(), Mockito.any()
+		);
+	}
+
+	@Test
+	public void addUserWithWorkflow_Calls_BaseMethodImplementation_With_ScreenNameWithEmailSuffixAdded_When_ScreenNameIsNotEmail_And_IsNotNull_And_IsNotEmpty()
+		throws PortalException {
+
+		String screenName = "user";
 
 		Mockito.when(
 			_userLocalService.addUserWithWorkflow(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
-				Mockito.anyString(), Mockito.anyString(), Mockito.any(),
+				Mockito.any(), Mockito.anyString(), Mockito.any(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(),
@@ -290,16 +511,54 @@ public class NewUserLocalServiceWrapperTest {
 			_user
 		);
 
-		String expected = _newUserLocalServiceWrapper.addEmailIfIsNotEmail(
-			screenName);
-
-		// Act
+		String expected = screenName + _correctEmailSuffix;
 
 		_newUserLocalServiceWrapper.addUserWithWorkflow(
 			0, 0, false, "", "", false, screenName, "", null, "", "", "", 0, 0,
 			false, 0, 0, 0, "", null, null, null, null, false, null);
 
-		// Assert
+		Mockito.verify(
+			_userLocalService
+		).addUserWithWorkflow(
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+			Mockito.eq(expected), Mockito.anyString(), Mockito.any(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(),
+			Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any(),
+			Mockito.any(), Mockito.anyBoolean(), Mockito.any()
+		);
+	}
+
+	// addUserWithWorkflow tests
+
+	@Test
+	public void addUserWithWorkflow_Calls_BaseMethodImplementation_With_UnmodifiedScreenName_When_ScreenNameIsAnEmailAddress()
+		throws PortalException {
+
+		String screenName = "user" + _correctEmailSuffix;
+
+		Mockito.when(
+			_userLocalService.addUserWithWorkflow(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString(), Mockito.any(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(),
+				Mockito.anyString(), Mockito.any(), Mockito.any(),
+				Mockito.any(), Mockito.any(), Mockito.anyBoolean(),
+				Mockito.any())
+		).thenReturn(
+			_user
+		);
+
+		String expected = screenName;
+
+		_newUserLocalServiceWrapper.addUserWithWorkflow(
+			0, 0, false, "", "", false, screenName, "", null, "", "", "", 0, 0,
+			false, 0, 0, 0, "", null, null, null, null, false, null);
 
 		Mockito.verify(
 			_userLocalService
@@ -316,24 +575,98 @@ public class NewUserLocalServiceWrapperTest {
 	}
 
 	@Test
-	public void addUserWithWorkflowDeprecated_Calls_userLocalService_addUserWithWorkflowDeprecated_With_addEmailIfIsNotEmail_Result()
+	public void addUserWithWorkflow_Calls_BaseMethodImplementationOfAddDefaultAdminUser_With_EmptyScreenName_When_ScreenNameIsEmpty()
 		throws PortalException {
 
-		// Arrange
-
-		String screenName = "user";
-
-		Mockito.when(
-			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
-		).thenReturn(
-			_correctEmailSufix
-		);
+		String screenName = "";
 
 		Mockito.when(
 			_userLocalService.addUserWithWorkflow(
 				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
-				Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(),
+				Mockito.any(), Mockito.anyString(), Mockito.any(),
+				Mockito.any(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(),
+				Mockito.anyString(), Mockito.any(), Mockito.any(),
+				Mockito.any(), Mockito.any(), Mockito.anyBoolean(),
+				Mockito.any())
+		).thenReturn(
+			_user
+		);
+
+		String expected = screenName;
+
+		_newUserLocalServiceWrapper.addUserWithWorkflow(
+			0, 0, false, "", "", false, screenName, "", null, "", "", "", 0, 0,
+			false, 0, 0, 0, "", null, null, null, null, false, null);
+
+		Mockito.verify(
+			_userLocalService
+		).addUserWithWorkflow(
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+			Mockito.eq(expected), Mockito.anyString(), Mockito.any(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(),
+			Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any(),
+			Mockito.any(), Mockito.anyBoolean(), Mockito.any()
+		);
+	}
+
+	@Test
+	public void addUserWithWorkflow_Calls_BaseMethodImplementationOfAddDefaultAdminUser_With_NullScreenName_When_ScreenNameIsNull()
+		throws PortalException {
+
+		String screenName = null;
+
+		Mockito.when(
+			_userLocalService.addUserWithWorkflow(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString(), Mockito.any(),
+				Mockito.any(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(),
+				Mockito.anyString(), Mockito.any(), Mockito.any(),
+				Mockito.any(), Mockito.any(), Mockito.anyBoolean(),
+				Mockito.any())
+		).thenReturn(
+			_user
+		);
+
+		String expected = screenName;
+
+		_newUserLocalServiceWrapper.addUserWithWorkflow(
+			0, 0, false, "", "", false, screenName, "", null, "", "", "", 0, 0,
+			false, 0, 0, 0, "", null, null, null, null, false, null);
+
+		Mockito.verify(
+			_userLocalService
+		).addUserWithWorkflow(
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+			Mockito.eq(expected), Mockito.anyString(), Mockito.any(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyString(),
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyInt(), Mockito.anyInt(), Mockito.anyInt(),
+			Mockito.anyString(), Mockito.any(), Mockito.any(), Mockito.any(),
+			Mockito.any(), Mockito.anyBoolean(), Mockito.any()
+		);
+	}
+
+	@Test
+	public void addUserWithWorkflowDeprecated_Calls_BaseMethodImplementation_With_ScreenNameWithEmailSuffixAdded_When_ScreenNameIsNotEmail_And_IsNotNull_And_IsNotEmpty()
+		throws PortalException {
+
+		String screenName = "user";
+
+		Mockito.when(
+			_userLocalService.addUserWithWorkflow(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString(), Mockito.anyLong(),
 				Mockito.anyString(), Mockito.any(), Mockito.anyString(),
 				Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(),
 				Mockito.anyLong(), Mockito.anyBoolean(), Mockito.anyInt(),
@@ -344,16 +677,11 @@ public class NewUserLocalServiceWrapperTest {
 			_user
 		);
 
-		String expected = _newUserLocalServiceWrapper.addEmailIfIsNotEmail(
-			screenName);
-
-		// Act
+		String expected = screenName + _correctEmailSuffix;
 
 		_newUserLocalServiceWrapper.addUserWithWorkflow(
 			0, 0, false, "", "", false, screenName, "", 0, "", null, "", "", "",
 			0, 0, false, 0, 0, 0, "", null, null, null, null, false, null);
-
-		// Assert
 
 		Mockito.verify(
 			_userLocalService
@@ -370,7 +698,145 @@ public class NewUserLocalServiceWrapperTest {
 		);
 	}
 
-	private final String _correctEmailSufix = "@company.com";
+	// addUserWithWorkflowDeprecated
+
+	@Test
+	public void addUserWithWorkflowDeprecated_Calls_BaseMethodImplementation_With_UnmodifiedScreenName_When_ScreenNameIsAnEmailAddress()
+		throws PortalException {
+
+		String screenName = "user" + _correctEmailSuffix;
+
+		Mockito.when(
+			_userLocalService.addUserWithWorkflow(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString(), Mockito.anyLong(),
+				Mockito.anyString(), Mockito.any(), Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(),
+				Mockito.anyLong(), Mockito.anyBoolean(), Mockito.anyInt(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(),
+				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+				Mockito.anyBoolean(), Mockito.any())
+		).thenReturn(
+			_user
+		);
+
+		String expected = screenName;
+
+		_newUserLocalServiceWrapper.addUserWithWorkflow(
+			0, 0, false, "", "", false, screenName, "", 0, "", null, "", "", "",
+			0, 0, false, 0, 0, 0, "", null, null, null, null, false, null);
+
+		Mockito.verify(
+			_userLocalService
+		).addUserWithWorkflow(
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+			Mockito.eq(expected), Mockito.anyString(), Mockito.anyLong(),
+			Mockito.anyString(), Mockito.any(), Mockito.anyString(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(),
+			Mockito.anyLong(), Mockito.anyBoolean(), Mockito.anyInt(),
+			Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(),
+			Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+			Mockito.anyBoolean(), Mockito.any()
+		);
+	}
+
+	@Test
+	public void addUserWithWorkflowDeprecated_Calls_BaseMethodImplementationOfAddDefaultAdminUser_With_EmptyScreenName_When_ScreenNameIsEmpty()
+		throws PortalException {
+
+		String screenName = "";
+
+		Mockito.when(
+			_userLocalService.addUserWithWorkflow(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString(), Mockito.anyLong(),
+				Mockito.anyString(), Mockito.any(), Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(),
+				Mockito.anyLong(), Mockito.anyBoolean(), Mockito.anyInt(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(),
+				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+				Mockito.anyBoolean(), Mockito.any())
+		).thenReturn(
+			_user
+		);
+
+		String expected = screenName;
+
+		_newUserLocalServiceWrapper.addUserWithWorkflow(
+			0, 0, false, "", "", false, screenName, "", 0, "", null, "", "", "",
+			0, 0, false, 0, 0, 0, "", null, null, null, null, false, null);
+
+		Mockito.verify(
+			_userLocalService
+		).addUserWithWorkflow(
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+			Mockito.eq(expected), Mockito.anyString(), Mockito.anyLong(),
+			Mockito.anyString(), Mockito.any(), Mockito.anyString(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(),
+			Mockito.anyLong(), Mockito.anyBoolean(), Mockito.anyInt(),
+			Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(),
+			Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+			Mockito.anyBoolean(), Mockito.any()
+		);
+	}
+
+	@Test
+	public void addUserWithWorkflowDeprecated_Calls_BaseMethodImplementationOfAddDefaultAdminUser_With_NullScreenName_When_ScreenNameIsNull()
+		throws PortalException {
+
+		String screenName = null;
+
+		Mockito.when(
+			_userLocalService.addUserWithWorkflow(
+				Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+				Mockito.any(), Mockito.anyString(), Mockito.anyLong(),
+				Mockito.anyString(), Mockito.any(), Mockito.anyString(),
+				Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(),
+				Mockito.anyLong(), Mockito.anyBoolean(), Mockito.anyInt(),
+				Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(),
+				Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+				Mockito.anyBoolean(), Mockito.any())
+		).thenReturn(
+			_user
+		);
+
+		String expected = screenName;
+
+		_newUserLocalServiceWrapper.addUserWithWorkflow(
+			0, 0, false, "", "", false, screenName, "", 0, "", null, "", "", "",
+			0, 0, false, 0, 0, 0, "", null, null, null, null, false, null);
+
+		Mockito.verify(
+			_userLocalService
+		).addUserWithWorkflow(
+			Mockito.anyLong(), Mockito.anyLong(), Mockito.anyBoolean(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(),
+			Mockito.eq(expected), Mockito.anyString(), Mockito.anyLong(),
+			Mockito.anyString(), Mockito.any(), Mockito.anyString(),
+			Mockito.anyString(), Mockito.anyString(), Mockito.anyLong(),
+			Mockito.anyLong(), Mockito.anyBoolean(), Mockito.anyInt(),
+			Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(),
+			Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
+			Mockito.anyBoolean(), Mockito.any()
+		);
+	}
+
+	@Before
+	public void setup() {
+		Mockito.when(
+			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
+		).thenReturn(
+			_correctEmailSuffix
+		);
+	}
+
+	private final String _anyEmailSuffix = "@email.com";
+	private final String _correctEmailSuffix = "@company.com";
 
 	@InjectMocks
 	private NewUserLocalServiceWrapper _newUserLocalServiceWrapper;
