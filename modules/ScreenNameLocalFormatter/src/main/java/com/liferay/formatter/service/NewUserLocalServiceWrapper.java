@@ -57,22 +57,11 @@ public class NewUserLocalServiceWrapper extends UserLocalServiceWrapper {
 			Locale locale, String firstName, String middleName, String lastName)
 		throws PortalException {
 
-		String screenNamewithEmail = addEmailIfIsNotEmail(screenName);
+		String screenNamewithEmail = _addEmailIfIsNotEmail(screenName);
 
 		return getWrappedService().addDefaultAdminUser(
 			companyId, screenNamewithEmail, emailAddress, locale, firstName,
 			middleName, lastName);
-	}
-
-	public String addEmailIfIsNotEmail(String screenName) {
-		if ((screenName != null) && !screenName.equals("") &&
-			!Validator.isEmailAddress(screenName)) {
-
-			screenName = screenName.concat(
-				_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL));
-		}
-
-		return screenName;
 	}
 
 	/**
@@ -131,7 +120,7 @@ public class NewUserLocalServiceWrapper extends UserLocalServiceWrapper {
 			boolean sendEmail, ServiceContext serviceContext)
 		throws PortalException {
 
-		String screenNamewithEmail = addEmailIfIsNotEmail(screenName);
+		String screenNamewithEmail = _addEmailIfIsNotEmail(screenName);
 
 		return getWrappedService().addUser(
 			creatorUserId, companyId, autoPassword, password1, password2,
@@ -203,7 +192,7 @@ public class NewUserLocalServiceWrapper extends UserLocalServiceWrapper {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		String screenNamewithEmail = addEmailIfIsNotEmail(screenName);
+		String screenNamewithEmail = _addEmailIfIsNotEmail(screenName);
 
 		return getWrappedService().addUser(
 			creatorUserId, companyId, autoPassword, password1, password2,
@@ -269,7 +258,7 @@ public class NewUserLocalServiceWrapper extends UserLocalServiceWrapper {
 			boolean sendEmail, ServiceContext serviceContext)
 		throws PortalException {
 
-		String screenNamewithEmail = addEmailIfIsNotEmail(screenName);
+		String screenNamewithEmail = _addEmailIfIsNotEmail(screenName);
 
 		return getWrappedService().addUserWithWorkflow(
 			creatorUserId, companyId, autoPassword, password1, password2,
@@ -279,17 +268,6 @@ public class NewUserLocalServiceWrapper extends UserLocalServiceWrapper {
 			organizationIds, roleIds, userGroupIds, sendEmail, serviceContext);
 	}
 
-	//
-	//
-	//
-	//
-	//
-	//	Util methods:
-	//
-	//
-	//
-	//
-	//
 	/**
 	 * Adds a user with workflow.
 	 *
@@ -352,7 +330,7 @@ public class NewUserLocalServiceWrapper extends UserLocalServiceWrapper {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		String screenNamewithEmail = addEmailIfIsNotEmail(screenName);
+		String screenNamewithEmail = _addEmailIfIsNotEmail(screenName);
 
 		return getWrappedService().addUserWithWorkflow(
 			creatorUserId, companyId, autoPassword, password1, password2,
@@ -362,17 +340,17 @@ public class NewUserLocalServiceWrapper extends UserLocalServiceWrapper {
 			organizationIds, roleIds, userGroupIds, sendEmail, serviceContext);
 	}
 
-	//
-	//
-	//
-	//
-	//
-	//	References
-	//
-	//
-	//
-	//
-	//
+	private String _addEmailIfIsNotEmail(String screenName) {
+		if ((screenName != null) && !screenName.equals("") &&
+			!Validator.isEmailAddress(screenName)) {
+
+			screenName = screenName.concat(
+				_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL));
+		}
+
+		return screenName;
+	}
+
 	@Reference(unbind = "-")
 	private void _serviceSetter(UserLocalService userLocalService) {
 		setWrappedService(userLocalService);

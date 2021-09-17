@@ -45,26 +45,25 @@ public class NewScreenNameGeneratorTest {
 	@Before
 	public void setup() {
 		Mockito.when(
-				_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
-			).thenReturn(
-				_correctEmail
-			);
-			Mockito.when(
-				_props.get(PropsKeys.ADMIN_RESERVED_SCREEN_NAMES)
-			).thenReturn(
-				_adminReservedScreenNames
-			);
+			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
+		).thenReturn(
+			_correctEmail
+		);
+		Mockito.when(
+			_props.get(PropsKeys.ADMIN_RESERVED_SCREEN_NAMES)
+		).thenReturn(
+			_adminReservedScreenNames
+		);
 
-			Mockito.when(
-				_prefsProps.getStringArray(
-					Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(),
-					Mockito.any())
-			).thenReturn(
-				_adminReservedScreenNamesArray
-			);
+		Mockito.when(
+			_prefsProps.getStringArray(
+				Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(),
+				Mockito.any())
+		).thenReturn(
+			_adminReservedScreenNamesArray
+		);
 	}
-	
-	
+
 	@Test
 	public void testGenerate_AddsEmailSufix_When_ScreenNameIsUnusedByOtherUserOrGroup_And_ScreenNameDoesNotContainsReservedWords()
 		throws Exception {
