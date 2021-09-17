@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.Props;
 import com.liferay.portal.kernel.util.PropsKeys;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -41,32 +42,35 @@ import org.mockito.junit.MockitoJUnitRunner;
 @RunWith(MockitoJUnitRunner.class)
 public class NewScreenNameGeneratorTest {
 
+	@Before
+	public void setup() {
+		Mockito.when(
+				_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
+			).thenReturn(
+				_correctEmail
+			);
+			Mockito.when(
+				_props.get(PropsKeys.ADMIN_RESERVED_SCREEN_NAMES)
+			).thenReturn(
+				_adminReservedScreenNames
+			);
+
+			Mockito.when(
+				_prefsProps.getStringArray(
+					Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(),
+					Mockito.any())
+			).thenReturn(
+				_adminReservedScreenNamesArray
+			);
+	}
+	
+	
 	@Test
 	public void testGenerate_AddsEmailSufix_When_ScreenNameIsUnusedByOtherUserOrGroup_And_ScreenNameDoesNotContainsReservedWords()
 		throws Exception {
 
-		// Arrange
-
 		String input = "user@liferay.com";
 		String expected = "user" + _correctEmail;
-		Mockito.when(
-			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
-		).thenReturn(
-			_correctEmail
-		);
-		Mockito.when(
-			_props.get(PropsKeys.ADMIN_RESERVED_SCREEN_NAMES)
-		).thenReturn(
-			_adminReservedScreenNames
-		);
-
-		Mockito.when(
-			_prefsProps.getStringArray(
-				Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.any())
-		).thenReturn(
-			_adminReservedScreenNamesArray
-		);
 
 		Mockito.when(
 			_userLocalService.fetchUserByScreenName(
@@ -82,11 +86,7 @@ public class NewScreenNameGeneratorTest {
 			null
 		);
 
-		// Act
-
 		String result = _newScreenNameGenerator.generate(0L, 0L, input);
-
-		// Assert
 
 		Assert.assertEquals(expected, result);
 	}
@@ -95,30 +95,9 @@ public class NewScreenNameGeneratorTest {
 	public void testGenerate_CreatesNewScreenName_When_ScreenNameIsAlreadyInUseByGroup()
 		throws Exception {
 
-		// Arrange
-
 		String input = "user@liferay.com";
 		String prefix = "user";
 		String expected = "user1" + _correctEmail;
-
-		Mockito.when(
-			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
-		).thenReturn(
-			_correctEmail
-		);
-		Mockito.when(
-			_props.get(PropsKeys.ADMIN_RESERVED_SCREEN_NAMES)
-		).thenReturn(
-			_adminReservedScreenNames
-		);
-
-		Mockito.when(
-			_prefsProps.getStringArray(
-				Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.any())
-		).thenReturn(
-			_adminReservedScreenNamesArray
-		);
 
 		Mockito.when(
 			_userLocalService.fetchUserByScreenName(
@@ -135,11 +114,7 @@ public class NewScreenNameGeneratorTest {
 			_groupWrapperMock
 		);
 
-		// Act
-
 		String result = _newScreenNameGenerator.generate(0L, 0L, input);
-
-		// Assert
 
 		Assert.assertEquals(expected, result);
 	}
@@ -148,32 +123,11 @@ public class NewScreenNameGeneratorTest {
 	public void testGenerate_CreatesNewScreenName_When_ScreenNameIsAlreadyUseByUser()
 		throws Exception {
 
-		// Arrange
-
 		String input = "user@liferay.com";
 
 		String prefix = "user";
 
 		String expected = prefix + "1" + _correctEmail;
-
-		Mockito.when(
-			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL)
-		).thenReturn(
-			_correctEmail
-		);
-		Mockito.when(
-			_props.get(PropsKeys.ADMIN_RESERVED_SCREEN_NAMES)
-		).thenReturn(
-			_adminReservedScreenNames
-		);
-
-		Mockito.when(
-			_prefsProps.getStringArray(
-				Mockito.anyLong(), Mockito.anyString(), Mockito.anyString(),
-				Mockito.any())
-		).thenReturn(
-			_adminReservedScreenNamesArray
-		);
 
 		Mockito.when(
 			_userLocalService.fetchUserByScreenName(
@@ -197,11 +151,7 @@ public class NewScreenNameGeneratorTest {
 			null
 		);
 
-		// Act
-
 		String result = _newScreenNameGenerator.generate(0L, 0L, input);
-
-		// Assert
 
 		Assert.assertEquals(expected, result);
 	}
