@@ -48,38 +48,27 @@ public class NewScreenNameGenerator implements ScreenNameGenerator {
 
 		screenName = StringUtil.extractFirst(emailAddress, CharPool.AT);
 
-		screenName = StringUtil.toLowerCase(screenName);
+		screenName = StringUtil.lowerCase(screenName);
 
 		screenName = _removeUnwantedCaracters(screenName);
 
+		screenName = _concatWithEmailSuffix(screenName);
+
+		if (_screeNameIsReservedScreenName(companyId, screenName) ||
+			_screeNameIsAlreadyInUse(companyId, screenName) ||
+			_screenNameIsSimilarToFriendlyURLGroup(companyId, screenName)) {
+
+			screenName = _getUnusedScreenName(companyId, screenName);
+		}
+
+		return screenName;
+	}
+
+	private String _concatWithEmailSuffix(String screenName) {
 		screenName = screenName.concat(
 			_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL));
 
-		String[] reservedScreenNames = _prefsProps.getStringArray(
-			companyId, PropsKeys.ADMIN_RESERVED_SCREEN_NAMES,
-			StringPool.NEW_LINE, _getAdminReservedScreenNames());
-
-		for (String reservedScreenName : reservedScreenNames) {
-			if (StringUtil.equalsIgnoreCase(screenName, reservedScreenName)) {
-				return _getUnusedScreenName(companyId, screenName);
-			}
-		}
-
-		User user = _userLocalService.fetchUserByScreenName(
-			companyId, screenName);
-
-		if (user != null) {
-			return _getUnusedScreenName(companyId, screenName);
-		}
-
-		Group friendlyURLGroup = _groupLocalService.fetchFriendlyURLGroup(
-			companyId, StringPool.SLASH + screenName);
-
-		if (friendlyURLGroup == null) {
-			return screenName;
-		}
-
-		return _getUnusedScreenName(companyId, screenName);
+		return screenName;
 	}
 
 	private String[] _getAdminReservedScreenNames() {
@@ -92,22 +81,17 @@ public class NewScreenNameGenerator implements ScreenNameGenerator {
 			String tempScreenName =
 				StringUtil.extractFirst(screenName, CharPool.AT) + i;
 
-			tempScreenName = tempScreenName.concat(
-				_props.get(NewFormatterKeys.USERS_SCREEN_NAME_COMPANY_EMAIL));
+			tempScreenName = _concatWithEmailSuffix(tempScreenName);
 
-			User user = _userLocalService.fetchUserByScreenName(
-				companyId, tempScreenName);
+			if (_screeNameIsReservedScreenName(companyId, tempScreenName) ||
+				_screeNameIsAlreadyInUse(companyId, tempScreenName) ||
+				_screenNameIsSimilarToFriendlyURLGroup(
+					companyId, tempScreenName)) {
 
-			if (user != null) {
 				continue;
 			}
 
-			Group friendlyURLGroup = _groupLocalService.fetchFriendlyURLGroup(
-				companyId, StringPool.SLASH + tempScreenName);
-
-			if (friendlyURLGroup == null) {
-				return tempScreenName;
-			}
+			return tempScreenName;
 		}
 	}
 
@@ -121,6 +105,48 @@ public class NewScreenNameGenerator implements ScreenNameGenerator {
 		}
 
 		return screenName;
+	}
+
+	private boolean _screeNameIsAlreadyInUse(
+		long companyId, String screenName) {
+
+		User user = _userLocalService.fetchUserByScreenName(
+			companyId, screenName);
+
+		if (user != null) {
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _screeNameIsReservedScreenName(
+		long companyId, String screenName) {
+
+		String[] reservedScreenNames = _prefsProps.getStringArray(
+			companyId, PropsKeys.ADMIN_RESERVED_SCREEN_NAMES,
+			StringPool.NEW_LINE, _getAdminReservedScreenNames());
+
+		for (String reservedScreenName : reservedScreenNames) {
+			if (StringUtil.equalsIgnoreCase(screenName, reservedScreenName)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean _screenNameIsSimilarToFriendlyURLGroup(
+		long companyId, String screenName) {
+
+		Group friendlyURLGroup = _groupLocalService.fetchFriendlyURLGroup(
+			companyId, StringPool.SLASH + screenName);
+
+		if (friendlyURLGroup != null) {
+			return true;
+		}
+
+		return false;
 	}
 
 	@Reference
