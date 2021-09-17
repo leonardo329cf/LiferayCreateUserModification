@@ -14,16 +14,20 @@
 
 package com.liferay.formatter.validator.service.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import static org.mockito.ArgumentMatchers.anyString;
+
+import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.powermock.api.mockito.PowerMockito.spy;
+
 import com.liferay.formatter.validator.service.NewScreenNameValidator;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.mockito.ArgumentMatchers;
-
-import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -36,10 +40,9 @@ public class NewScreenNameValidatorTest {
 
 	@Before
 	public void setup() throws Exception {
-		_newScreenNameValidator = PowerMockito.spy(
-			new NewScreenNameValidator());
+		_newScreenNameValidator = spy(new NewScreenNameValidator());
 
-		PowerMockito.doReturn(
+		doReturn(
 			_correctEmail
 		).when(
 			_newScreenNameValidator, "_getCorrectEmail"
@@ -50,36 +53,34 @@ public class NewScreenNameValidatorTest {
 	public void validate_ReturnsFalse_When_StrDoesNotEndsWithCorrectEmail()
 		throws Exception {
 
-		PowerMockito.doReturn(
+		doReturn(
 			false
 		).when(
-			_newScreenNameValidator, "hasInvalidChars",
-			ArgumentMatchers.anyString()
+			_newScreenNameValidator, "hasInvalidChars", anyString()
 		);
 
 		String screenName = "joao@email.com";
 
 		boolean actual = _newScreenNameValidator.validate(0L, screenName);
 
-		Assert.assertFalse(actual);
+		assertFalse(actual);
 	}
 
 	@Test
 	public void validate_ReturnsFalse_When_StrEndsWithNoEmail()
 		throws Exception {
 
-		PowerMockito.doReturn(
+		doReturn(
 			false
 		).when(
-			_newScreenNameValidator, "hasInvalidChars",
-			ArgumentMatchers.anyString()
+			_newScreenNameValidator, "hasInvalidChars", anyString()
 		);
 
 		String screenName = "joao";
 
 		boolean actual = _newScreenNameValidator.validate(0L, screenName);
 
-		Assert.assertFalse(actual);
+		assertFalse(actual);
 	}
 
 	@Test
@@ -88,16 +89,15 @@ public class NewScreenNameValidatorTest {
 
 		String screenName = "joao/" + _correctEmail;
 
-		PowerMockito.doReturn(
+		doReturn(
 			true
 		).when(
-			_newScreenNameValidator, "hasInvalidChars",
-			ArgumentMatchers.anyString()
+			_newScreenNameValidator, "hasInvalidChars", anyString()
 		);
 
 		boolean actual = _newScreenNameValidator.validate(0L, screenName);
 
-		Assert.assertFalse(actual);
+		assertFalse(actual);
 	}
 
 	@Test
@@ -106,16 +106,15 @@ public class NewScreenNameValidatorTest {
 
 		String screenName = "joao" + _correctEmail;
 
-		PowerMockito.doReturn(
+		doReturn(
 			false
 		).when(
-			_newScreenNameValidator, "hasInvalidChars",
-			ArgumentMatchers.anyString()
+			_newScreenNameValidator, "hasInvalidChars", anyString()
 		);
 
 		boolean actual = _newScreenNameValidator.validate(0L, screenName);
 
-		Assert.assertTrue(actual);
+		assertTrue(actual);
 	}
 
 	private String _correctEmail = "@company.com";
